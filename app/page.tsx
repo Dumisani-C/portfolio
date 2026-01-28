@@ -544,9 +544,6 @@ export default function Home() {
             <span className="text-xl font-bold">D<span className="text-cyan-400">_</span>C</span>
             <span className="text-white/30 text-sm">© {new Date().getFullYear()}</span>
           </div>
-          <div className="text-white/30 text-sm font-mono">
-            Built with Next.js + Tailwind + Framer Motion
-          </div>
         </div>
       </footer>
     </main>
