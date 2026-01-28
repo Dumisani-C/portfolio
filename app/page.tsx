@@ -1,232 +1,554 @@
-import Navbar from "@/components/Navbar";
+"use client";
+
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+function CustomCursor() {
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springConfig = { damping: 25, stiffness: 700 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+
+  useEffect(() => {
+    const moveCursor = (e: MouseEvent) => {
+      cursorX.set(e.clientX - 4);
+      cursorY.set(e.clientY - 4);
+    };
+    window.addEventListener("mousemove", moveCursor);
+    return () => window.removeEventListener("mousemove", moveCursor);
+  }, [cursorX, cursorY]);
+
+  return (
+    <>
+      <motion.div
+        className="cursor-dot"
+        style={{ left: cursorXSpring, top: cursorYSpring }}
+      />
+      <motion.div
+        className="cursor-ring"
+        style={{ left: cursorXSpring, top: cursorYSpring, x: -16, y: -16 }}
+      />
+    </>
+  );
+}
+
+function TerminalWindow() {
+  const [text, setText] = useState("");
+  const fullText = `> const dumisani = {
+    role: "AI Engineer & Full-Stack Dev",
+    focus: ["ML Systems", "Agentic AI", "HPC"],
+    status: "Building the future..."
+  };`;
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < fullText.length) {
+        setText(fullText.slice(0, i + 1));
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 30);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="rounded-2xl bg-[#0d0d0d] border border-[#222] overflow-hidden font-mono text-sm">
+      <div className="flex items-center gap-2 px-4 py-3 bg-[#161616] border-b border-[#222]">
+        <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+        <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+        <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+        <span className="ml-2 text-white/40 text-xs">terminal</span>
+      </div>
+      <div className="p-4 min-h-[160px]">
+        <pre className="text-cyan-400 whitespace-pre-wrap">{text}<span className="animate-blink">▋</span></pre>
+      </div>
+    </div>
+  );
+}
+
+function TimeDisplay() {
+  const [time, setTime] = useState("");
+  
+  useEffect(() => {
+    const update = () => {
+      setTime(new Date().toLocaleTimeString("en-US", { 
+        hour: "2-digit", 
+        minute: "2-digit",
+        hour12: false 
+      }));
+    };
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return <span className="font-mono">{time}</span>;
+}
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black text-white">
-      <Navbar />
+    <main className="relative min-h-screen bg-[#0a0a0a] text-white noise">
+      <CustomCursor />
+      
+      {/* Gradient Mesh Background */}
+      <div className="fixed inset-0 gradient-mesh pointer-events-none" />
 
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 opacity-[0.18] [background-image:radial-gradient(#ffffff_1px,transparent_1px)] [background-size:18px_18px]" />
-        <div className="absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-purple-600/20 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-[420px] w-[420px] rounded-full bg-cyan-500/10 blur-[120px]" />
-      </div>
-
-      {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-28 pb-16 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight md:text-6xl">
-          <span className="drop-shadow-[0_0_25px_rgba(168,85,247,0.6)]">
-            Dumisani Amon Chikomo
-          </span>
-        </h1>
-
-        <p className="mt-3 text-lg text-white/70">
-          Data-driven AI systems • Full-stack engineering • Student success
-        </p>
-
-        <p className="mx-auto mt-6 max-w-2xl text-white/70">
-          I build systems that turn research insights into real tools — from
-          predicting burnout risk to adaptive study planning and agentic AI.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="#work"
-            className="rounded-xl bg-purple-600 px-6 py-3 font-semibold hover:bg-purple-500"
-          >
-            View My Work
+      {/* Minimal Nav */}
+      <motion.nav
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 px-6 py-6"
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <a href="#" className="text-xl font-bold tracking-tighter glitch">
+            D<span className="text-cyan-400">_</span>C
           </a>
-          <a
-            href="/resume.pdf"
-            className="rounded-xl bg-white/10 px-6 py-3 font-semibold ring-1 ring-white/20 hover:bg-white/15"
+          
+          <div className="hidden md:flex items-center gap-8 text-sm text-white/50">
+            <a href="#work" className="hover-line hover:text-white transition-colors">Work</a>
+            <a href="#about" className="hover-line hover:text-white transition-colors">About</a>
+            <a href="#contact" className="hover-line hover:text-white transition-colors">Contact</a>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <span className="text-white/30 text-sm hidden sm:block"><TimeDisplay /></span>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* Hero Section - Asymmetric Editorial Layout */}
+      <section className="min-h-screen flex items-center px-6 pt-24">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid lg:grid-cols-5 gap-8 items-center">
+            {/* Left - Typography */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:col-span-3"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 status-dot" />
+                <span className="text-sm text-white/50 uppercase tracking-widest">Available for work</span>
+              </div>
+              
+              <h1 className="display-text">
+                <span className="block text-white">DUMISANI</span>
+                <span className="block outline-text">CHIKOMO</span>
+              </h1>
+              
+              <p className="mt-8 text-xl text-white/40 max-w-md leading-relaxed">
+                AI Engineer crafting intelligent systems. 
+                <span className="text-cyan-400"> Research</span> to 
+                <span className="text-pink-400"> production</span>.
+              </p>
+              
+              <div className="mt-10 flex items-center gap-6">
+                <a
+                  href="#work"
+                  className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-cyan-400 transition-colors duration-300"
+                >
+                  View Work
+                </a>
+                <a
+                  href="#contact"
+                  className="hover-line text-white/60 hover:text-white transition-colors"
+                >
+                  Contact
+                </a>
+              </div>
+            </motion.div>
+            
+            {/* Right - Terminal + Stats */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="lg:col-span-2 space-y-6"
+            >
+              <TerminalWindow />
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bento-item p-4 text-center">
+                  <div className="text-3xl font-bold text-cyan-400">5+</div>
+                  <div className="text-xs text-white/40 mt-1">Projects</div>
+                </div>
+                <div className="bento-item p-4 text-center">
+                  <div className="text-3xl font-bold text-pink-400">ML</div>
+                  <div className="text-xs text-white/40 mt-1">Focus</div>
+                </div>
+                <div className="bento-item p-4 text-center">
+                  <div className="text-3xl font-bold text-emerald-400">HPC</div>
+                  <div className="text-xs text-white/40 mt-1">Research</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Marquee Section */}
+      <section className="py-12 border-y border-white/10 overflow-hidden">
+        <div className="animate-marquee flex whitespace-nowrap">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex items-center gap-8 mx-4">
+              {["PYTHON", "TYPESCRIPT", "NEXT.JS", "PYTORCH", "LANGCHAIN", "FASTAPI", "POSTGRESQL", "DOCKER", "HPC", "ML/AI"].map((tech, j) => (
+                <span key={j} className="text-4xl font-bold text-white/10 hover:text-cyan-400/50 transition-colors cursor-default">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Work Section */}
+      <section id="work" className="px-6 py-24">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-12">
+            <p className="text-white/50">Our most recent engineering achievements</p>
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">View All</a>
+          </div>
+
+          {/* Project Cards Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Tenant Payment System */}
+            <motion.a
+              href="/projects/tenant-system"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4">
+                <Image
+                  src="/demos/tenant-system.png"
+                  alt="Tenant Payment System"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["Full-Stack", "Payments", "Auth"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 text-xs border border-white/20 rounded-md text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold mb-2">Tenant Payment System</h3>
+              <p className="text-white/50 text-sm leading-relaxed">
+                Full-stack system for landlord-tenant workflows with payments, roles, and support tickets.
+              </p>
+            </motion.a>
+
+            {/* Study Companion */}
+            <motion.a
+              href="/projects/study-companion"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group"
+            >
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4">
+                <Image
+                  src="/demos/study-companion/image.png"
+                  alt="Study Companion"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["AI", "Agent", "LangChain"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 text-xs border border-white/20 rounded-md text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold mb-2">Study Companion</h3>
+              <p className="text-white/50 text-sm leading-relaxed">
+                Adaptive study agent that reflects, prioritizes weak areas, and rebalances plans dynamically.
+              </p>
+            </motion.a>
+
+            {/* Load Balancer */}
+            <motion.a
+              href="/projects/load-balancer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="group"
+            >
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4 bg-gradient-to-br from-emerald-950 via-teal-900 to-cyan-950">
+                {/* Network visualization */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative">
+                    {/* Central node */}
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/30 border-2 border-emerald-400 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-emerald-400 animate-pulse" />
+                    </div>
+                    {/* Connection lines */}
+                    <div className="absolute -left-16 top-1/2 w-12 h-0.5 bg-gradient-to-r from-transparent to-emerald-400/50" />
+                    <div className="absolute -right-16 top-1/2 w-12 h-0.5 bg-gradient-to-l from-transparent to-emerald-400/50" />
+                    <div className="absolute left-1/2 -top-12 w-0.5 h-8 bg-gradient-to-b from-transparent to-emerald-400/50" />
+                    <div className="absolute left-1/2 -bottom-12 w-0.5 h-8 bg-gradient-to-t from-transparent to-emerald-400/50" />
+                    {/* Outer nodes */}
+                    <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-teal-500/50 border border-teal-400/50" />
+                    <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-teal-500/50 border border-teal-400/50" />
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-16 w-6 h-6 rounded-full bg-teal-500/50 border border-teal-400/50" />
+                    <div className="absolute left-1/2 -translate-x-1/2 -bottom-16 w-6 h-6 rounded-full bg-teal-500/50 border border-teal-400/50" />
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 text-xs text-emerald-400/70 font-mono">Layer 7 · 8 Algorithms</div>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["Python", "FastAPI", "Redis", "K8s"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 text-xs border border-white/20 rounded-md text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold mb-2">Enterprise Load Balancer</h3>
+              <p className="text-white/50 text-sm leading-relaxed">
+                High-performance Layer 7 load balancer with circuit breakers, Redis caching, and Kubernetes deployment.
+              </p>
+            </motion.a>
+
+            {/* Class-Life Balance */}
+            <motion.a
+              href="/projects/class-life-balance"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="group"
+            >
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4">
+                <Image
+                  src="/demos/class-life-balance/image.png"
+                  alt="Class-Life Balance"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["Productivity", "Planning", "Students"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 text-xs border border-white/20 rounded-md text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold mb-2">Class-Life Optimizer</h3>
+              <p className="text-white/50 text-sm leading-relaxed">
+                Planning tool to help students balance work, classes, and recovery time effectively.
+              </p>
+            </motion.a>
+
+            {/* Burnout Research */}
+            <motion.a
+              href="/research/burnout"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="group"
+            >
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/10 mb-4">
+                <Image
+                  src="/images/image.png"
+                  alt="PEARC25 Research Presentation"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["ML", "Research", "HPC"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 text-xs border border-white/20 rounded-md text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h3 className="text-xl font-bold mb-2">Burnout Prediction</h3>
+              <p className="text-white/50 text-sm leading-relaxed">
+                ML research analyzing work-study student burnout patterns using TACC Stampede3 HPC.
+              </p>
+            </motion.a>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="px-6 py-24 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          {/* Introduction with Photo */}
+          <div className="grid lg:grid-cols-5 gap-12 mb-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="lg:col-span-3"
+            >
+              <span className="text-pink-400 text-sm font-mono">// about me</span>
+              <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
+                Hello, I&apos;m <span className="text-cyan-400">Dumisani</span>
+              </h2>
+              <div>
+                <p className="text-white/70 text-lg leading-relaxed mb-4">
+                  I&apos;m a full-stack developer and ML researcher. My journey started with solving real problems — managing 50+ IT tickets weekly for 1,600+ users, optimizing MySQL queries to cut backend latency by 40%, and building <span className="text-cyan-400">AI agents</span> that help people balance their work and personal lives.
+                </p>
+                <p className="text-white/70 text-lg leading-relaxed">
+                  What drives me is the intersection of <span className="text-pink-400">intelligent systems</span> and <span className="text-emerald-400">human-centered design</span>. I don&apos;t just build software — I build agents that adapt, learn, and genuinely help people accomplish their goals. From ML models on TACC supercomputers achieving 88.6% accuracy to enterprise load balancers with 8 routing algorithms, I focus on turning insights into production-ready tools.
+                </p>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-2"
+            >
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 group">
+                <Image
+                  src="/images/image.png"
+                  alt="Dumisani presenting at PEARC25"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded border border-cyan-500/30">PEARC25</span>
+                    <span className="px-2 py-1 text-xs bg-pink-500/20 text-pink-400 rounded border border-pink-500/30">TACC</span>
+                  </div>
+                  <p className="text-white/70 text-sm mt-2">Presenting research at Greater Columbus Convention Center in Columbus, Ohio</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Philosophy */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-2xl font-bold mb-6">My Philosophy</h3>
+              <div className="space-y-4">
+                {[
+                  { title: "Agent-First Thinking", desc: "I design systems as autonomous agents that can reason, adapt, and take action — not just respond to inputs.", color: "cyan" },
+                  { title: "Research-Driven Development", desc: "My projects stem from real research. The Class-Life Balance Optimizer was born from my PEARC25 burnout prediction study.", color: "pink" },
+                  { title: "Human-Centered AI", desc: "AI should amplify human capability, not replace it. I build tools that empower users to make better decisions.", color: "emerald" },
+                  { title: "End-to-End Ownership", desc: "From ML model training on HPC clusters to deploying production APIs — I own the full stack.", color: "amber" },
+                ].map((item) => (
+                  <div key={item.title} className="bento-item p-5">
+                    <div className={`text-${item.color}-400 font-semibold mb-2`}>{item.title}</div>
+                    <p className="text-white/50 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Stack */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <h3 className="text-2xl font-bold mb-6">The Stack</h3>
+              <div className="space-y-4">
+                {[
+                  { label: "Languages", items: ["Python", "TypeScript", "JavaScript", "Java", "SQL", "C/C++"], color: "cyan" },
+                  { label: "AI / ML", items: ["Scikit-learn", "LangChain", "Gemini API", "Pandas", "NumPy"], color: "pink" },
+                  { label: "Full-Stack", items: ["Next.js", "React", "Django REST", "FastAPI", "PostgreSQL"], color: "emerald" },
+                  { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "TACC HPC", "Git/GitHub Actions"], color: "amber" },
+                ].map((group) => (
+                  <div key={group.label} className="bento-item p-5">
+                    <div className={`text-xs font-mono text-${group.color}-400 mb-3`}>{group.label}</div>
+                    <div className="flex flex-wrap gap-2">
+                      {group.items.map((item) => (
+                        <span key={item} className="px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded-full hover:border-cyan-400/50 transition-colors">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="px-6 py-24 border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            Download Resume
-          </a>
-        </div>
-      </section>
-
-      {/* Work */}
-      <section id="work" className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur">
-          <p className="text-sm text-white/60">Research → System → Agent</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-            Work that connects data to real tools
-          </h2>
-          <p className="mt-3 max-w-2xl text-white/70">
-            My projects follow a clear arc: I studied burnout risk with ML + HPC,
-            then built Class-Life Balance Optimizer, and evolved it into Study
-            Companion.
-          </p>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl bg-black/40 p-5 ring-1 ring-white/10">
-              <p className="text-xs text-white/60">FOUNDATION</p>
-              <h3 className="mt-2 font-semibold">Burnout Research (PEARC25)</h3>
-              <p className="mt-2 text-sm text-white/70">
-                ML research on work-study student burnout using time-use data and
-                HPC (TACC Stampede3).
-              </p>
-              <a
-                className="mt-3 inline-block text-sm text-purple-300 hover:text-purple-200"
-                href="/research/burnout"
-              >
-                Read case study →
-              </a>
-            </div>
-
-            <div className="rounded-2xl bg-black/40 p-5 ring-1 ring-white/10">
-              <p className="text-xs text-white/60">SYSTEM</p>
-              <h3 className="mt-2 font-semibold">Class-Life Balance Optimizer</h3>
-              <p className="mt-2 text-sm text-white/70">
-                Planning tool built directly after my research to help students
-                balance work, classes, and recovery time.
-              </p>
-              <a
-                className="mt-3 inline-block text-sm text-purple-300 hover:text-purple-200"
-                href="/projects/class-life-balance"
-              >
-                View project →
-              </a>
-            </div>
-
-            <div className="rounded-2xl bg-black/40 p-5 ring-1 ring-white/10">
-              <p className="text-xs text-white/60">AGENT</p>
-              <h3 className="mt-2 font-semibold">Study Companion</h3>
-              <p className="mt-2 text-sm text-white/70">
-                Adaptive study agent that reflects, prioritizes weak areas, and
-                rebalances plans when life happens.
-              </p>
-              <a
-                className="mt-3 inline-block text-sm text-purple-300 hover:text-purple-200"
-                href="/projects/study-companion"
-              >
-                Explore agent →
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Systems */}
-      <section id="systems" className="mx-auto max-w-6xl px-6 pb-24">
-        <p className="text-sm text-white/60">SYSTEMS & INFRASTRUCTURE</p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-          Engineering beyond the interface
-        </h2>
-        <p className="mt-3 max-w-2xl text-white/70">
-          Alongside student-facing AI tools, I build backend systems that focus
-          on reliability, performance, and real-world workflows.
-        </p>
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:-translate-y-1 hover:bg-white/[0.07]">
-            <p className="text-xs text-white/60">INFRASTRUCTURE</p>
-            <h3 className="mt-2 text-xl font-semibold">Custom Load Balancer</h3>
-            <p className="mt-3 text-sm text-white/70">
-              A security-focused load balancer built to explore request routing,
-              health checks, and fault tolerance under load.
+            <span className="text-cyan-400 text-sm font-mono">// let&apos;s connect</span>
+            <h2 className="text-6xl md:text-8xl font-bold mt-4 mb-8">
+              Say<br />
+              <span className="outline-text">Hello</span>
+            </h2>
+            
+            <p className="text-white/50 text-xl mb-12 max-w-xl mx-auto">
+              Working on AI systems, research projects, or need a full-stack engineer? 
+              Let&apos;s talk.
             </p>
-
-            <ul className="mt-4 space-y-1 text-sm text-white/65">
-              <li>• Request routing & health checks</li>
-              <li>• Failure handling & service resilience</li>
-              <li>• Observability hooks for performance analysis</li>
-            </ul>
-
-            <div className="mt-4 flex gap-4 text-sm">
-              <a className="text-purple-300 hover:text-purple-200" href="/projects/load-balancer">
-                View code →
+            
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href="mailto:chikomodumisani@gmail.com"
+                className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-cyan-400 transition-colors duration-300 flex items-center gap-2"
+              >
+                <span>Email Me</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
               </a>
-              <a className="text-white/60 hover:text-white" href="/projects/load-balancer">
-                System design →
+              <a
+                href="https://github.com/Dumisani-C"
+                target="_blank"
+                rel="noreferrer"
+                className="px-8 py-4 border border-white/20 rounded-full hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+              >
+                GitHub
               </a>
-            </div>
-          </div>
-
-          <div className="group rounded-2xl bg-white/5 p-6 ring-1 ring-white/10 transition hover:-translate-y-1 hover:bg-white/[0.07]">
-            <p className="text-xs text-white/60">REAL-WORLD APP</p>
-            <h3 className="mt-2 text-xl font-semibold">
-              Tenant Payment & Support System
-            </h3>
-            <p className="mt-3 text-sm text-white/70">
-              A full-stack system modeling real landlord–tenant workflows
-              including payments, roles, and support requests.
-            </p>
-
-            <ul className="mt-4 space-y-1 text-sm text-white/65">
-              <li>• Role-based access (tenant, landlord, admin)</li>
-              <li>• Payment lifecycle & status tracking</li>
-              <li>• Integrated support ticket workflows</li>
-            </ul>
-
-            <div className="mt-4 flex gap-4 text-sm">
-              <a className="text-purple-300 hover:text-purple-200" href="/projects/tenant-system">
-                View project →
-              </a>
-              <a className="text-white/60 hover:text-white" href="/projects/tenant-system">
-                Screenshots →
+              <a
+                href="https://www.linkedin.com/in/dumisani-chikomo-5a730718a"
+                target="_blank"
+                rel="noreferrer"
+                className="px-8 py-4 border border-white/20 rounded-full hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+              >
+                LinkedIn
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
-            {/* Contact */}
-      <section id="contact" className="mx-auto max-w-6xl px-6 pb-24">
-        <div className="rounded-2xl bg-white/5 p-8 ring-1 ring-white/10 backdrop-blur">
-          <p className="text-sm text-white/60">CONTACT</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
-            Let’s build something meaningful
-          </h2>
-          <p className="mt-3 max-w-2xl text-white/70">
-            If you’re working on AI systems, Full Stack Engineering, or data-driven
-            products — I’d love to connect.
-          </p>
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a
-              href="mailto:chikomodumisani@gmail.com"
-              className="rounded-xl bg-purple-600 px-6 py-3 font-semibold hover:bg-purple-500"
-            >
-              Email me
-            </a>
-
-            <a
-              href="https://github.com/Dumisani-C"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl bg-white/10 px-6 py-3 font-semibold ring-1 ring-white/20 hover:bg-white/15"
-            >
-              GitHub
-            </a>
-
-            <a
-              href="https://www.linkedin.com/in/dumisani-chikomo-5a730718a"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl bg-white/10 px-6 py-3 font-semibold ring-1 ring-white/20 hover:bg-white/15"
-            >
-              LinkedIn
-            </a>
-
-            <a
-              href="/resume.pdf"
-              className="rounded-xl bg-white/10 px-6 py-3 font-semibold ring-1 ring-white/20 hover:bg-white/15"
-            >
-              Download resume
-            </a>
+      {/* Footer */}
+      <footer className="px-6 py-8 border-t border-white/10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-xl font-bold">D<span className="text-cyan-400">_</span>C</span>
+            <span className="text-white/30 text-sm">© {new Date().getFullYear()}</span>
           </div>
-        </div>
-      </section>
-            <footer className="mx-auto max-w-6xl px-6 pb-10 text-sm text-white/50">
-        <div className="flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Dumisani Chikomo. All rights reserved.</p>
-          <p className="text-white/40">
-            Built with Next.js + TypeScript + Tailwind.
-          </p>
+          <div className="text-white/30 text-sm font-mono">
+            Built with Next.js + Tailwind + Framer Motion
+          </div>
         </div>
       </footer>
-
-
     </main>
   );
 }
