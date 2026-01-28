@@ -211,7 +211,7 @@ export default function Home() {
       <section id="work" className="px-6 py-24">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-12">
-            <p className="text-white/50">Our most recent engineering achievements</p>
+            <p className="text-white/50">Recent engineering projects</p>
             <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors">View All</a>
           </div>
 
