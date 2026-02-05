@@ -44,6 +44,7 @@ function TerminalWindow() {
 
   useEffect(() => {
     let i = 0;
+    setText("");
     const timer = setInterval(() => {
       if (i < fullText.length) {
         setText(fullText.slice(0, i + 1));
@@ -51,9 +52,9 @@ function TerminalWindow() {
       } else {
         clearInterval(timer);
       }
-    }, 30);
+    }, 40);
     return () => clearInterval(timer);
-  }, []);
+  }, [fullText]);
 
   return (
     <div className="rounded-2xl bg-[#0d0d0d] border border-[#222] overflow-hidden font-mono text-sm">
@@ -64,8 +65,113 @@ function TerminalWindow() {
         <span className="ml-2 text-white/40 text-xs">terminal</span>
       </div>
       <div className="p-4 min-h-[160px]">
-        <pre className="text-cyan-400 whitespace-pre-wrap">{text}<span className="animate-blink">▋</span></pre>
+        <pre className="text-white/90 whitespace-pre-wrap">{text}<span className="animate-blink">▋</span></pre>
       </div>
+    </div>
+  );
+}
+
+function FloatingParticles() {
+  const particles = Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 1,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 25 + 20,
+    delay: Math.random() * 8,
+    direction: Math.random() > 0.5 ? 1 : -1,
+  }));
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+          }}
+          animate={{
+            y: [0, -60 * p.direction, -30, -80 * p.direction, 0],
+            x: [0, 30 * p.direction, -20 * p.direction, 40 * p.direction, 0],
+            opacity: [0.1, 0.5, 0.3, 0.6, 0.1],
+            scale: [1, 1.2, 0.8, 1.3, 1],
+          }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            delay: p.delay,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+      {/* Larger floating orbs - white with glow */}
+      <motion.div
+        className="absolute w-3 h-3 rounded-full bg-white"
+        style={{ left: "15%", top: "25%", boxShadow: "0 0 15px rgba(255,255,255,0.8)" }}
+        animate={{ 
+          y: [0, -50, 20, -30, 0], 
+          x: [0, 30, -20, 40, 0],
+          opacity: [0.3, 0.7, 0.4, 0.8, 0.3],
+          scale: [1, 1.3, 0.9, 1.2, 1]
+        }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute w-2 h-2 rounded-full bg-white"
+        style={{ left: "75%", top: "15%", boxShadow: "0 0 12px rgba(255,255,255,0.6)" }}
+        animate={{ 
+          y: [0, 40, -60, 20, 0], 
+          x: [0, -40, 20, -30, 0],
+          opacity: [0.2, 0.6, 0.3, 0.7, 0.2] 
+        }}
+        transition={{ duration: 22, repeat: Infinity, delay: 3, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute w-4 h-4 rounded-full bg-white/20"
+        style={{ left: "85%", top: "55%", boxShadow: "0 0 20px rgba(255,255,255,0.4)" }}
+        animate={{ 
+          y: [0, -70, 30, -40, 0], 
+          x: [0, -50, 30, -20, 0],
+          opacity: [0.1, 0.4, 0.2, 0.5, 0.1],
+          scale: [1, 1.5, 0.8, 1.4, 1]
+        }}
+        transition={{ duration: 25, repeat: Infinity, delay: 5, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute w-2.5 h-2.5 rounded-full bg-white"
+        style={{ left: "8%", top: "65%", boxShadow: "0 0 14px rgba(255,255,255,0.7)" }}
+        animate={{ 
+          y: [0, 50, -40, 60, 0], 
+          x: [0, 40, -30, 50, 0],
+          opacity: [0.25, 0.6, 0.35, 0.7, 0.25] 
+        }}
+        transition={{ duration: 20, repeat: Infinity, delay: 2, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute w-3 h-3 rounded-full bg-white/30"
+        style={{ left: "50%", top: "75%", boxShadow: "0 0 18px rgba(255,255,255,0.5)" }}
+        animate={{ 
+          y: [0, -80, 40, -50, 0], 
+          x: [0, 60, -40, 30, 0],
+          opacity: [0.15, 0.5, 0.25, 0.6, 0.15],
+          scale: [1, 1.4, 0.7, 1.3, 1]
+        }}
+        transition={{ duration: 28, repeat: Infinity, delay: 4, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute w-1.5 h-1.5 rounded-full bg-white"
+        style={{ left: "35%", top: "40%", boxShadow: "0 0 10px rgba(255,255,255,0.9)" }}
+        animate={{ 
+          y: [0, 30, -50, 40, 0], 
+          x: [0, -30, 50, -40, 0],
+          opacity: [0.3, 0.8, 0.4, 0.9, 0.3] 
+        }}
+        transition={{ duration: 15, repeat: Infinity, delay: 1, ease: "easeInOut" }}
+      />
     </div>
   );
 }
@@ -92,7 +198,7 @@ function TimeDisplay() {
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#0a0a0a] text-white noise">
-      <CustomCursor />
+      <FloatingParticles />
       
       {/* Gradient Mesh Background */}
       <div className="fixed inset-0 gradient-mesh pointer-events-none" />
@@ -106,7 +212,7 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#" className="text-xl font-bold tracking-tighter glitch">
-            D<span className="text-cyan-400">_</span>C
+            D<span className="text-white/50">_</span>C
           </a>
           
           <div className="hidden md:flex items-center gap-8 text-sm text-white/50">
@@ -133,7 +239,7 @@ export default function Home() {
               className="lg:col-span-3"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 status-dot" />
+                <div className="w-2 h-2 rounded-full bg-white status-dot" />
                 <span className="text-sm text-white/50 uppercase tracking-widest">Available for work</span>
               </div>
               
@@ -144,14 +250,14 @@ export default function Home() {
               
               <p className="mt-8 text-xl text-white/40 max-w-md leading-relaxed">
                 AI Engineer crafting intelligent systems. 
-                <span className="text-cyan-400"> Research</span> to 
-                <span className="text-pink-400"> production</span>.
+                <span className="text-white"> Research</span> to 
+                <span className="text-white/70"> production</span>.
               </p>
               
               <div className="mt-10 flex items-center gap-6">
                 <a
                   href="#work"
-                  className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-cyan-400 transition-colors duration-300"
+                  className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-white/80 transition-colors duration-300"
                 >
                   View Work
                 </a>
@@ -175,15 +281,15 @@ export default function Home() {
               
               <div className="grid grid-cols-3 gap-4">
                 <div className="bento-item p-4 text-center">
-                  <div className="text-3xl font-bold text-cyan-400">5+</div>
+                  <div className="text-3xl font-bold text-white">5+</div>
                   <div className="text-xs text-white/40 mt-1">Projects</div>
                 </div>
                 <div className="bento-item p-4 text-center">
-                  <div className="text-3xl font-bold text-pink-400">ML</div>
+                  <div className="text-3xl font-bold text-white">ML</div>
                   <div className="text-xs text-white/40 mt-1">Focus</div>
                 </div>
                 <div className="bento-item p-4 text-center">
-                  <div className="text-3xl font-bold text-emerald-400">HPC</div>
+                  <div className="text-3xl font-bold text-white">HPC</div>
                   <div className="text-xs text-white/40 mt-1">Research</div>
                 </div>
               </div>
@@ -394,16 +500,16 @@ export default function Home() {
               viewport={{ once: true }}
               className="lg:col-span-3"
             >
-              <span className="text-pink-400 text-sm font-mono">// about me</span>
+              <span className="text-white/50 text-sm font-mono">// about me</span>
               <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6">
-                Hello, I&apos;m <span className="text-cyan-400">Dumisani</span>
+                Hello, I&apos;m <span className="text-white">Dumisani</span>
               </h2>
               <div>
                 <p className="text-white/70 text-lg leading-relaxed mb-4">
-                  I&apos;m a full-stack developer and ML researcher. My journey started with solving real problems — managing 50+ IT tickets weekly for 1,600+ users, optimizing MySQL queries to cut backend latency by 40%, and building <span className="text-cyan-400">AI agents</span> that help people balance their work and personal lives.
+                  I&apos;m a full-stack developer and ML researcher. My journey started with solving real problems — managing 50+ IT tickets weekly for 1,600+ users, optimizing MySQL queries to cut backend latency by 40%, and building <span className="text-white">AI agents</span> that help people balance their work and personal lives.
                 </p>
                 <p className="text-white/70 text-lg leading-relaxed">
-                  What drives me is the intersection of <span className="text-pink-400">intelligent systems</span> and <span className="text-emerald-400">human-centered design</span>. I don&apos;t just build software — I build agents that adapt, learn, and genuinely help people accomplish their goals. From ML models on TACC supercomputers achieving 88.6% accuracy to enterprise load balancers with 8 routing algorithms, I focus on turning insights into production-ready tools.
+                  What drives me is the intersection of <span className="text-white">intelligent systems</span> and <span className="text-white/80">human-centered design</span>. I don&apos;t just build software — I build agents that adapt, learn, and genuinely help people accomplish their goals. From ML models on TACC supercomputers achieving 88.6% accuracy to enterprise load balancers with 8 routing algorithms, I focus on turning insights into production-ready tools.
                 </p>
               </div>
             </motion.div>
@@ -425,8 +531,8 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 text-xs bg-cyan-500/20 text-cyan-400 rounded border border-cyan-500/30">PEARC25</span>
-                    <span className="px-2 py-1 text-xs bg-pink-500/20 text-pink-400 rounded border border-pink-500/30">TACC</span>
+                    <span className="px-2 py-1 text-xs bg-white/10 text-white rounded border border-white/20">PEARC25</span>
+                    <span className="px-2 py-1 text-xs bg-white/10 text-white/80 rounded border border-white/20">TACC</span>
                   </div>
                   <p className="text-white/70 text-sm mt-2">Presenting research at Greater Columbus Convention Center in Columbus, Ohio</p>
                 </div>
@@ -444,13 +550,13 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-6">My Philosophy</h3>
               <div className="space-y-4">
                 {[
-                  { title: "Agent-First Thinking", desc: "I design systems as autonomous agents that can reason, adapt, and take action — not just respond to inputs.", color: "cyan" },
-                  { title: "Research-Driven Development", desc: "My projects stem from real research. The Class-Life Balance Optimizer was born from my PEARC25 burnout prediction study.", color: "pink" },
-                  { title: "Human-Centered AI", desc: "AI should amplify human capability, not replace it. I build tools that empower users to make better decisions.", color: "emerald" },
-                  { title: "End-to-End Ownership", desc: "From ML model training on HPC clusters to deploying production APIs — I own the full stack.", color: "amber" },
+                  { title: "Agent-First Thinking", desc: "I design systems as autonomous agents that can reason, adapt, and take action — not just respond to inputs.", color: "white" },
+                  { title: "Research-Driven Development", desc: "My projects stem from real research. The Class-Life Balance Optimizer was born from my PEARC25 burnout prediction study.", color: "white" },
+                  { title: "Human-Centered AI", desc: "AI should amplify human capability, not replace it. I build tools that empower users to make better decisions.", color: "white" },
+                  { title: "End-to-End Ownership", desc: "From ML model training on HPC clusters to deploying production APIs — I own the full stack.", color: "white" },
                 ].map((item) => (
                   <div key={item.title} className="bento-item p-5">
-                    <div className={`text-${item.color}-400 font-semibold mb-2`}>{item.title}</div>
+                    <div className="text-white font-semibold mb-2">{item.title}</div>
                     <p className="text-white/50 text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 ))}
@@ -467,16 +573,16 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-6">The Stack</h3>
               <div className="space-y-4">
                 {[
-                  { label: "Languages", items: ["Python", "TypeScript", "JavaScript", "Java", "SQL", "C/C++"], color: "cyan" },
-                  { label: "AI / ML", items: ["Scikit-learn", "LangChain", "Gemini API", "Pandas", "NumPy"], color: "pink" },
-                  { label: "Full-Stack", items: ["Next.js", "React", "Django REST", "FastAPI", "PostgreSQL"], color: "emerald" },
-                  { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "TACC HPC", "Git/GitHub Actions"], color: "amber" },
+                  { label: "Languages", items: ["Python", "TypeScript", "JavaScript", "Java", "SQL", "C/C++"], color: "white" },
+                  { label: "AI / ML", items: ["Scikit-learn", "LangChain", "Gemini API", "Pandas", "NumPy"], color: "white" },
+                  { label: "Full-Stack", items: ["Next.js", "React", "Django REST", "FastAPI", "PostgreSQL"], color: "white" },
+                  { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "TACC HPC", "Git/GitHub Actions"], color: "white" },
                 ].map((group) => (
                   <div key={group.label} className="bento-item p-5">
-                    <div className={`text-xs font-mono text-${group.color}-400 mb-3`}>{group.label}</div>
+                    <div className="text-xs font-mono text-white/70 mb-3">{group.label}</div>
                     <div className="flex flex-wrap gap-2">
                       {group.items.map((item) => (
-                        <span key={item} className="px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded-full hover:border-cyan-400/50 transition-colors">
+                        <span key={item} className="px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded-full hover:border-white/50 transition-colors">
                           {item}
                         </span>
                       ))}
@@ -497,7 +603,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="text-cyan-400 text-sm font-mono">// let&apos;s connect</span>
+            <span className="text-white/50 text-sm font-mono">// let&apos;s connect</span>
             <h2 className="text-6xl md:text-8xl font-bold mt-4 mb-8">
               Say<br />
               <span className="outline-text">Hello</span>
@@ -511,7 +617,7 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="mailto:chikomodumisani@gmail.com"
-                className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-cyan-400 transition-colors duration-300 flex items-center gap-2"
+                className="group px-8 py-4 bg-white text-black font-semibold rounded-full hover:bg-white/80 transition-colors duration-300 flex items-center gap-2"
               >
                 <span>Email Me</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -541,7 +647,7 @@ export default function Home() {
       <footer className="px-6 py-8 border-t border-white/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="text-xl font-bold">D<span className="text-cyan-400">_</span>C</span>
+            <span className="text-xl font-bold">D<span className="text-white/50">_</span>C</span>
             <span className="text-white/30 text-sm">© {new Date().getFullYear()}</span>
           </div>
         </div>
