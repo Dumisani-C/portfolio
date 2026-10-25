@@ -1,89 +1,62 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --accent: #22d3ee;
-  --accent-2: #f472b6;
+/* Design tokens. Use them as Tailwind classes: bg-paper, text-ink, border-rule, font-mono, ... */
+@theme {
+  --color-paper: #f3efe8;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #55524c;
+  --color-ink-faint: #8f8a80;
+
+  --color-night: #0b0b0b;
+  --color-night-2: #151515;
+  --color-chalk: #e2e2e2;
+  --color-chalk-soft: #9a9a9a;
+  --color-chalk-faint: #5e5e5e;
+  --color-rule: #262626;
+
+  --color-dot: #4f6fd8;
+  --color-accent: #8ea6ff;
+
+  --animate-blink: blink 1s steps(1) infinite;
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
 }
 
+/* Fonts come from next/font variables set on <html> in layout.tsx */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-inter), "Helvetica Neue", Arial, sans-serif;;
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 html {
   scroll-behavior: smooth;
+  background: var(--color-night);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  overflow-x: hidden;
+  background: var(--color-night);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Cursor */
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: #ffffff;
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.1s;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
-}
-.cursor-ring {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9998;
-  transition: all 0.15s ease-out;
-}
-.cursor-ring.hover {
-  transform: scale(1.5);
-  background: rgba(255, 255, 255, 0.1);
+:focus-visible {
+  outline: 2px solid var(--color-dot);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-/* Selection */
-::selection {
-  background: #ffffff;
-  color: #0a0a0a;
-}
+/* Hide the left panel's scrollbar if a short screen ever needs it */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #ffffff;
-  border-radius: 2px;
-}
-
-/* Typography */
-.display-text {
-  font-size: clamp(4rem, 12vw, 9rem);
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-}
-
-.outline-text {
-  -webkit-text-stroke: 1px #fafafa;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Noise overlay */
+/* Still used by the project detail pages */
 .noise::before {
   content: "";
   position: fixed;
@@ -92,115 +65,4 @@ body {
   opacity: 0.03;
   pointer-events: none;
   z-index: 100;
-}
-
-/* Marquee */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 20s linear infinite;
-}
-
-/* Blink */
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-.animate-blink {
-  animation: blink 1s infinite;
-}
-
-/* Terminal typing */
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
-}
-.typing-effect {
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typing 2s steps(30) forwards;
-}
-
-/* Magnetic button effect */
-.magnetic-btn {
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Reveal animation */
-@keyframes reveal {
-  from { 
-    clip-path: inset(0 100% 0 0);
-    opacity: 0;
-  }
-  to { 
-    clip-path: inset(0 0 0 0);
-    opacity: 1;
-  }
-}
-.animate-reveal {
-  animation: reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-/* Hover line effect */
-.hover-line {
-  position: relative;
-}
-.hover-line::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: #ffffff;
-  transition: width 0.3s ease;
-}
-.hover-line:hover::after {
-  width: 100%;
-}
-
-/* Bento grid item */
-.bento-item {
-  background: #111111;
-  border: 1px solid #222;
-  border-radius: 24px;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.bento-item:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -20px rgba(255, 255, 255, 0.2);
-}
-
-/* Gradient mesh */
-.gradient-mesh {
-  background: 
-    radial-gradient(at 40% 20%, rgba(255, 255, 255, 0.05) 0px, transparent 50%),
-    radial-gradient(at 80% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, rgba(255, 255, 255, 0.04) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, rgba(255, 255, 255, 0.02) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.04) 0px, transparent 50%);
-}
-
-/* Status dot */
-@keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.5; }
-}
-.status-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-/* Glitch effect */
-@keyframes glitch {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-}
-.glitch:hover {
-  animation: glitch 0.3s ease infinite;
 }
