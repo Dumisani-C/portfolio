@@ -1,34 +1,49 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Dumisani Chikomo | AI Systems & Full-Stack Engineer",
-  description: "Building AI systems, full-stack applications, and research-driven tools. Specializing in ML, Next.js, and adaptive learning agents.",
+  metadataBase: new URL("https://dumisanichikomo.com"),
+  title: "Dumisani Chikomo · Software Engineer",
+  description:
+    "Software engineer building AI developer tools. Former SWE intern at Credit Karma, CS at Berea College, PEARC25 ML researcher.",
+  openGraph: {
+    title: "Dumisani Chikomo · Software Engineer",
+    description:
+      "AI developer tools, ML systems and fintech. Former SWE intern at Credit Karma, CS at Berea College.",
+    url: "https://dumisanichikomo.com",
+    siteName: "Dumisani Chikomo",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${inter.variable} ${interTight.variable} ${jetbrains.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }
